@@ -11,164 +11,160 @@ GO
 
 -- Tạo bảng User để lưu thông tin chung của tất cả các loại người dùng
 CREATE TABLE [User] (
-    UserID INT PRIMARY KEY IDENTITY(1,1),
-    FirstName NVARCHAR(100) NOT NULL,
-    LastName NVARCHAR(100) NOT NULL,
+    User_ID INT PRIMARY KEY IDENTITY(1,1),
+    First_Name NVARCHAR(100) NOT NULL,
+    Last_Name NVARCHAR(100) NOT NULL,
     Email VARCHAR(100) UNIQUE NOT NULL,
     Username VARCHAR(50) UNIQUE NOT NULL,
     Password VARCHAR(50) NOT NULL,
     Balance DECIMAL(10, 2) DEFAULT 0,
-    AvatarImagePath VARCHAR(MAX),
-    BackgroundImagePath VARCHAR(MAX),
-    RegistrationDate DATETIME,
+    Avatar_Image_Path VARCHAR(MAX),
+    Background_ImagePath VARCHAR(MAX),
+    Registration_Date DATETIME,
     Status INT DEFAULT 1,
-    UserType INT NOT NULL,
+    User_Type INT NOT NULL,
     CONSTRAINT CHK_Balance CHECK (Balance >= 0)
 );
 
 -- Tạo bảng Admin
 CREATE TABLE Admin (
-    UserID INT PRIMARY KEY,
-    CONSTRAINT FK_Admin_User FOREIGN KEY (UserID) REFERENCES [User](UserID)
+    Admin_ID INT PRIMARY KEY,
+    User_ID INT NOT NULL,
+    CONSTRAINT FK_Admin_User FOREIGN KEY (User_ID) REFERENCES [User](User_ID)
 );
 
 -- Tạo bảng CourseManager
 CREATE TABLE CourseManager (
-    UserID INT PRIMARY KEY,
-    CONSTRAINT FK_CourseManager_User FOREIGN KEY (UserID) REFERENCES [User](UserID)
+    Course_Manager_ID INT PRIMARY KEY,
+    User_ID INT NOT NULL,
+    CONSTRAINT FK_CourseManager_User FOREIGN KEY (User_ID) REFERENCES [User](User_ID)
 );
 
 -- Tạo bảng Mentor
 CREATE TABLE Mentor (
-    UserID INT PRIMARY KEY,
-    CONSTRAINT FK_Mentor_User FOREIGN KEY (UserID) REFERENCES [User](UserID)
+    Mentor_ID INT PRIMARY KEY,
+    User_ID INT NOT NULL,
+    CONSTRAINT FK_Mentor_User FOREIGN KEY (User_ID) REFERENCES [User](User_ID)
 );
 
 -- Tạo bảng Learner
 CREATE TABLE Learner (
-    UserID INT PRIMARY KEY,
-    CONSTRAINT FK_Learner_User FOREIGN KEY (UserID) REFERENCES [User](UserID)
+    Learner_ID INT PRIMARY KEY,
+    User_ID INT NOT NULL,
+    CONSTRAINT FK_Learner_User FOREIGN KEY (User_ID) REFERENCES [User](User_ID)
 );
 
 -- Tạo bảng Certificate
 CREATE TABLE Certificate (
-    CertificateID INT PRIMARY KEY IDENTITY(1,1),
-    MentorID INT NOT NULL,
-    CertificateName NVARCHAR(255) NOT NULL,
-    IssuedDate DATE NOT NULL,
+    Certificate_ID INT PRIMARY KEY IDENTITY(1,1),
+    Mentor_ID INT NOT NULL,
+    Certificate_Name NVARCHAR(255) NOT NULL,
+    Issued_Date DATE NOT NULL,
     Description NVARCHAR(MAX),
-    ImagePath VARCHAR(MAX),
-    CONSTRAINT FK_Certificate_Mentor FOREIGN KEY (MentorID) REFERENCES Mentor(UserID)
+    Image_Path VARCHAR(MAX),
+    CONSTRAINT FK_Certificate_Mentor FOREIGN KEY (Mentor_ID) REFERENCES Mentor(Mentor_ID)
 );
 
 -- Tạo bảng Category
 CREATE TABLE Category (
-    CategoryID INT PRIMARY KEY IDENTITY(1,1),
-    CategoryName NVARCHAR(255) NOT NULL,
-    CategoryDescription NVARCHAR(MAX)
+    Cate_ID INT PRIMARY KEY IDENTITY(1,1),
+    Cate_Name NVARCHAR(255) NOT NULL,
+    Cate_Description NVARCHAR(MAX)
 );
 
 -- Tạo bảng Sub-Category
 CREATE TABLE SubCategory (
-    SubCategoryID INT PRIMARY KEY IDENTITY(1,1),
-    CategoryID INT NOT NULL,
-    SubCategoryName NVARCHAR(255) NOT NULL,
-    SubCategoryDescription NVARCHAR(MAX)
-    CONSTRAINT FK_Category FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
+    Sub_Cate_ID INT PRIMARY KEY IDENTITY(1,1),
+    Cate_ID INT NOT NULL,
+    Sub_Cate_Name NVARCHAR(255) NOT NULL,
+    Sub_Cate_Description NVARCHAR(MAX)
+    CONSTRAINT FK_Category FOREIGN KEY (Cate_ID) REFERENCES Category(Cate_ID)
 );
 
 -- Tạo bảng CourseCreator
 CREATE TABLE CourseCreator (   
-    CourseCreatorID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT NOT NULL,
-    CONSTRAINT FK_CourseCreator_UserID FOREIGN KEY (UserID) REFERENCES [User](UserID)
+    Course_Creator_ID INT PRIMARY KEY IDENTITY(1,1),
+    User_ID INT NOT NULL,
+    CONSTRAINT FK_CourseCreator_User_ID FOREIGN KEY (User_ID) REFERENCES [User](User_ID)
 );
 
 -- Tạo bảng Course
 CREATE TABLE Course (
-    CourseID INT PRIMARY KEY IDENTITY(1,1),
-    CourseName NVARCHAR(255) NOT NULL,
-    CourseDescription NVARCHAR(MAX),
-    SubCategoryID INT NOT NULL,
-    ImagePath VARCHAR(MAX),
+    Course_ID INT PRIMARY KEY IDENTITY(1,1),
+    Course_Name NVARCHAR(255) NOT NULL,
+    Course_Description NVARCHAR(MAX),
+    Sub_Cate_ID INT NOT NULL,
+    Image_Path VARCHAR(MAX),
     Status INT DEFAULT 0,
     Price DECIMAL(10, 2),
-    CourseCreatorID INT NOT NULL,
-    CONSTRAINT FK_SubCategory FOREIGN KEY (SubCategoryID) REFERENCES SubCategory(SubCategoryID),
-    CONSTRAINT FK_CourseCreator FOREIGN KEY (CourseCreatorID) REFERENCES CourseCreator(CourseCreatorID),
+    Course_Creator_ID INT NOT NULL,
+    CONSTRAINT FK_SubCategory FOREIGN KEY (Sub_Cate_ID) REFERENCES SubCategory(Sub_Cate_ID),
+    CONSTRAINT FK_CourseCreator FOREIGN KEY (Course_Creator_ID) REFERENCES CourseCreator(Course_Creator_ID),
     CONSTRAINT CHK_Price CHECK (Price >= 0)
 );
 
 -- Tạo bảng CourseSection
 CREATE TABLE CourseSection(
-    SectionID INT PRIMARY KEY IDENTITY(1,1),
-    CourseID INT NOT NULL,
-    SectionName NVARCHAR(255) NOT NULL,
-    SectionDescription NVARCHAR(MAX),
-    CONSTRAINT FK_Section_Course FOREIGN KEY (CourseID) REFERENCES Course(CourseID)
+    Section_ID INT PRIMARY KEY IDENTITY(1,1),
+    Course_ID INT NOT NULL,
+    Section_Name NVARCHAR(255) NOT NULL,
+    Section_Description NVARCHAR(MAX),
+    CONSTRAINT FK_Section_Course FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID)
 );
 
 -- Tạo bảng LessonType
 CREATE TABLE LessonType (
-    LessonTypeID INT PRIMARY KEY IDENTITY(1,1),
-    LessonName NVARCHAR(100)
+    Lesson_Type_ID INT PRIMARY KEY IDENTITY(1,1),
+    Lesson_Name NVARCHAR(100)
 );
 
 -- Tạo bảng Lesson
 CREATE TABLE Lesson (
-    LessonID INT PRIMARY KEY IDENTITY(1,1),
-    SectionID INT NOT NULL,
-    LessonName NVARCHAR(255) NOT NULL,
-    LessonDescription NVARCHAR(MAX),
-    LessonTypeID INT NOT NULL,
-    LessonContent NVARCHAR(MAX),
-    CONSTRAINT FK_Lesson_Section FOREIGN KEY (SectionID) REFERENCES CourseSection(SectionID),
-    CONSTRAINT FK_Lesson_Type FOREIGN KEY (LessonTypeID) REFERENCES LessonType(LessonTypeID),
+    Lesson_ID INT PRIMARY KEY IDENTITY(1,1),
+    Section_ID INT NOT NULL,
+    Lesson_Name NVARCHAR(255) NOT NULL,
+    Lesson_Description NVARCHAR(MAX),
+    Lesson_Type_ID INT NOT NULL,
+    Lesson_Content NVARCHAR(MAX),
+    CONSTRAINT FK_Lesson_Section FOREIGN KEY (Section_ID) REFERENCES CourseSection(Section_ID),
+    CONSTRAINT FK_Lesson_Type FOREIGN KEY (Lesson_Type_ID) REFERENCES LessonType(Lesson_Type_ID),
 );
 
 --Tạo bảng Coupon
 CREATE TABLE Coupon (
-    CouponID INT PRIMARY KEY IDENTITY(1,1),
-    CouponCode VARCHAR(50),
-    DiscountPercentage INT,
-    ExpiryDate DATETIME,
+    Coupon_ID INT PRIMARY KEY IDENTITY(1,1),
+    Coupon_Code VARCHAR(50),
+    Discount_Percentage INT,
+    Expiry_Date DATETIME,
     Quantity INT,
-    CONSTRAINT CHK_DiscountPercentageRange CHECK (DiscountPercentage >= 0 AND DiscountPercentage <= 100),
+    CONSTRAINT CHK_DiscountPercentageRange CHECK (Discount_Percentage >= 0 AND Discount_Percentage <= 100),
     CONSTRAINT CHK_Quantity CHECK (Quantity >= 0)
 );
 
 -- Tạo bảng AssignmentType
 CREATE TABLE AssignmentType (
-    AssignmentTypeID INT PRIMARY KEY IDENTITY(1,1),
-    AssignmentTypeName NVARCHAR(100) NOT NULL
+    Assignment_Type_ID INT PRIMARY KEY IDENTITY(1,1),
+    Assignment_Type_Name NVARCHAR(100) NOT NULL
 );
 
 -- Tạo bảng Assignment
 CREATE TABLE Assignment (
-    AssignmentID INT PRIMARY KEY IDENTITY(1,1),
-    SectionID INT NOT NULL,
-    AssignmentName NVARCHAR(255) NOT NULL,
-    AssignmentDescription NVARCHAR(MAX),
-    AssignmentTypeID INT NOT NULL,
-    PassCondition DECIMAL(10, 2),
-    CONSTRAINT FK_Assignment_Section FOREIGN KEY (SectionID) REFERENCES CourseSection(SectionID),
-    CONSTRAINT FK_Assignment_Type FOREIGN KEY (AssignmentTypeID) REFERENCES AssignmentType(AssignmentTypeID),
-    CONSTRAINT CHK_PassCondition CHECK (PassCondition >= 0 AND PassCondition <= 10)
+    Assignment_ID INT PRIMARY KEY IDENTITY(1,1),
+    Section_ID INT NOT NULL,
+    Assignment_Name NVARCHAR(255) NOT NULL,
+    Assignment_Description NVARCHAR(MAX),
+    Assignment_Type_ID INT NOT NULL,
+    Pass_Condition DECIMAL(10, 2),
+    CONSTRAINT FK_Assignment_Section FOREIGN KEY (Section_ID) REFERENCES CourseSection(Section_ID),
+    CONSTRAINT FK_Assignment_Type FOREIGN KEY (Assignment_Type_ID) REFERENCES AssignmentType(Assignment_Type_ID),
+    CONSTRAINT CHK_PassCondition CHECK (Pass_Condition >= 0 AND Pass_Condition <= 10)
 );
 
 -- Tạo bảng AssignmentQuestion
 CREATE TABLE AssignmentQuestion (
-    QuestionID INT PRIMARY KEY IDENTITY(1,1),
-    AssignmentID INT NOT NULL,
-    QuestionText NVARCHAR(MAX) NOT NULL,
-    AnswerText NVARCHAR(MAX) NOT NULL,
-    CONSTRAINT FK_Question_Assignment FOREIGN KEY (AssignmentID) REFERENCES Assignment(AssignmentID)
+    Question_ID INT PRIMARY KEY IDENTITY(1,1),
+    Assignment_ID INT NOT NULL,
+    Question_Text NVARCHAR(MAX) NOT NULL,
+    Answer_Text NVARCHAR(MAX) NOT NULL,
+    CONSTRAINT FK_Question_Assignment FOREIGN KEY (Assignment_ID) REFERENCES Assignment(Assignment_ID)
 );
-
--- Tạo bảng AssignmentAnswer
---CREATE TABLE AssignmentAnswer (
---    AnswerID INT PRIMARY KEY IDENTITY(1,1),
---   QuestionID INT NOT NULL,
---    AnswerText NVARCHAR(MAX) NOT NULL,
---    CONSTRAINT FK_Answer_Question FOREIGN KEY (QuestionID) REFERENCES AssignmentQuestion(QuestionID)
---);
