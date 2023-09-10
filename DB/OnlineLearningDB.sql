@@ -168,3 +168,36 @@ CREATE TABLE AssignmentQuestion (
     Answer_Text NVARCHAR(MAX) NOT NULL,
     CONSTRAINT FK_Question_Assignment FOREIGN KEY (Assignment_ID) REFERENCES Assignment(Assignment_ID)
 );
+
+CREATE TABLE [Order] (
+    Order_ID INT IDENTITY (1, 1) PRIMARY KEY,
+    User_ID INT NOT NULL,
+    Order_Date DATETIME,
+    Course_ID INT NOT NULL,
+    Coupon_ID INT,
+    Price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (User_ID) REFERENCES [User](User_ID),
+    FOREIGN KEY (Coupon_ID) REFERENCES Coupon(Coupon_ID),
+    FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID),
+    CONSTRAINT CHK_Order_Price CHECK (Price >= 0)
+);
+
+CREATE TABLE Feedback (
+    Feedback_ID INT PRIMARY KEY,
+    User_ID INT NOT NULL,
+    Course_ID INT NOT NULL,
+    Rating INT NOT NULL,
+    Comment NVARCHAR(MAX),
+    Feedback_Date DATETIME,
+    FOREIGN KEY (User_ID) REFERENCES [User](User_ID),
+    FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID),
+    CONSTRAINT CHK_Rating CHECK (Rating >= 0 AND Rating <= 5)
+);
+
+CREATE TABLE CourseProgress (
+    Course_ID INT NOT NULL,
+    User_ID INT NOT NULL,
+    Status INT DEFAULT 0,
+    FOREIGN KEY (User_ID) REFERENCES [User](User_ID),
+    FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID),
+);
